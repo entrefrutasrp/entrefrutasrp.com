@@ -204,8 +204,9 @@ function setStars(n){
 }
 
 function addComment(){
- const name=document.getElementById("comment-name").value;
- const text=document.getElementById("comment-text").value;
+<button onclick="clearComments()" class="bg-red-500 text-white px-4 py-2 rounded">
+  Limpar avaliações
+</button>
  if(!name||!text) return alert("Preencha tudo");
 
  const comments=JSON.parse(localStorage.getItem("comments")||"[]");
