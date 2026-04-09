@@ -11,12 +11,14 @@
 body { background:#fdfaf6; }
 .cart-slide { transition: transform .3s ease; }
 .hidden { display:none; }
+.star { cursor:pointer; font-size:22px; }
+.star.active { color:#facc15; }
 </style>
 </head>
 
 <body class="text-gray-800">
 
-<!-- HEADER CENTRALIZADO -->
+<!-- HEADER -->
 <header class="bg-amber-900 text-white sticky top-0 z-50">
   <div class="max-w-6xl mx-auto px-4 py-4 text-center relative">
     <h1 class="text-2xl font-bold">Entre Frutas</h1>
@@ -29,7 +31,7 @@ body { background:#fdfaf6; }
   </div>
 </header>
 
-<!-- ESCOLHA INICIAL -->
+<!-- HOME -->
 <section id="home" class="py-12 text-center">
   <h2 class="text-3xl font-bold text-amber-900 mb-8">
     Escolha o que deseja 🍓
@@ -52,172 +54,219 @@ body { background:#fdfaf6; }
   </div>
 </section>
 
+<!-- BOTÃO VOLTAR -->
+<div id="backBtn" class="hidden text-center mt-6">
+  <button onclick="goHome()" class="bg-gray-300 px-4 py-2 rounded">
+    ⬅ Voltar
+  </button>
+</div>
+
 <!-- PRODUTOS -->
 <main id="products" class="max-w-6xl mx-auto px-4 py-10 hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></main>
 
-<!-- CARRINHO (NÃO MEXI) -->
-<div id="cart"
- class="fixed top-0 right-0 w-full max-w-sm h-full bg-white shadow-lg cart-slide translate-x-full z-50 flex flex-col">
+<!-- AVALIAÇÕES -->
+<section id="avaliacoes" class="bg-white py-12">
+  <h3 class="text-3xl font-bold text-center text-amber-900 mb-6">
+    Avaliações dos Clientes ⭐
+  </h3>
 
-<div class="p-4 flex justify-between items-center border-b">
-  <h3 class="font-bold">Seu carrinho</h3>
-  <button onclick="toggleCart()">❌</button>
-</div>
+  <div class="max-w-xl mx-auto px-4 space-y-4 mb-10">
+    <input id="comment-name" placeholder="Seu nome"
+      class="w-full border p-3 rounded">
 
-<div id="cart-items" class="flex-1 p-4 space-y-3 overflow-y-auto"></div>
+    <textarea id="comment-text" placeholder="Seu comentário"
+      class="w-full border p-3 rounded h-28"></textarea>
 
-<div class="p-4 border-t space-y-3">
-  <p class="font-bold">Total: <span id="cart-total">R$ 0,00</span></p>
+    <div class="flex gap-1 justify-center">
+      <span class="star" onclick="setStars(1)">★</span>
+      <span class="star" onclick="setStars(2)">★</span>
+      <span class="star" onclick="setStars(3)">★</span>
+      <span class="star" onclick="setStars(4)">★</span>
+      <span class="star" onclick="setStars(5)">★</span>
+    </div>
 
-  <input id="nome" placeholder="Seu nome"
-    class="w-full border p-2 rounded">
+    <button onclick="addComment()"
+      class="w-full bg-amber-900 text-white py-3 rounded font-bold">
+      Enviar avaliação
+    </button>
+  </div>
 
-  <input id="endereco" placeholder="Endereço completo"
-    class="w-full border p-2 rounded">
+  <div id="comments"
+    class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
+  </div>
+</section>
 
-  <button onclick="clearCart()" class="w-full bg-gray-300 py-2 rounded">
-    Limpar carrinho
-  </button>
+<!-- RODAPÉ -->
+<footer class="bg-amber-900 text-white py-10 text-center">
+  <h4 class="text-2xl font-bold mb-2">Entre Frutas</h4>
+  <p class="text-amber-200 mb-4">Geleias e Açaí Artesanal</p>
 
-  <button onclick="checkout()"
-    class="w-full bg-green-600 text-white py-3 rounded font-bold">
-    Finalizar no WhatsApp
-  </button>
-</div>
-</div>
+  <a href="https://www.instagram.com/entrefrutasribeirao"
+     target="_blank"
+     class="inline-flex items-center gap-2 hover:text-amber-300">
+    📷 Instagram
+  </a>
 
+  <p class="mt-6 text-sm text-amber-300">
+    Transformando frutas em carinho, todos os dias 🍓
+  </p>
+</footer>
+
+<!-- SCRIPT -->
 <script>
-let cart = [];
-let tempQty = {};
-let currentProducts = [];
+let cart=[], tempQty={}, currentProducts=[];
 
-/* ===== PRODUTOS ===== */
-const geleias = [
+/* PRODUTOS */
+const geleias=[
  {id:1,name:"Geleia de Morango",price:25,img:"🍓"},
  {id:2,name:"Geleia de Abacaxi com Pimenta",price:24,img:"🍍"},
  {id:3,name:"Geleia de Frutas Vermelhas",price:28,img:"🍒"},
 ];
 
-const acai = [
- {id:10,name:"Açaí com mousse de ninho (500ml)",price:22,img:"🥤"},
- {id:11,name:"Açaí com mousse de Morango (500ml)",price:26,img:"🥤"},
- {id:12,name:"Açaí com mousse de Maracujá (500ml)",price:22,img:"🥤"},
- {id:13,name:"Açaí com creme de Nutella (500ml)",price:28.5,img:"🥤"},
- {id:14,name:"Açaí com creme de Kinder (500ml)",price:28.5,img:"🥤"},
- {id:15,name:"Açaí com suco de Laranja (500ml)",price:20,img:"🥤"},
+const acai=[
+ {id:10,name:"Açaí mousse ninho 500ml",price:22,img:"🥤"},
+ {id:11,name:"Açaí mousse morango 500ml",price:26,img:"🥤"},
+ {id:12,name:"Açaí mousse maracujá 500ml",price:22,img:"🥤"},
+ {id:13,name:"Açaí Nutella 500ml",price:28.5,img:"🥤"},
+ {id:14,name:"Açaí Kinder 500ml",price:28.5,img:"🥤"},
+ {id:15,name:"Açaí laranja 500ml",price:20,img:"🥤"},
 
- {id:16,name:"Açaí com mousse de ninho (300ml)",price:13.99,img:"🥤"},
- {id:17,name:"Açaí com mousse de Morango (300ml)",price:16,img:"🥤"},
- {id:18,name:"Açaí com mousse de Maracujá (300ml)",price:13.99,img:"🥤"},
- {id:19,name:"Açaí com creme de Nutella (300ml)",price:18,img:"🥤"},
- {id:20,name:"Açaí com creme de Kinder (300ml)",price:18.5,img:"🥤"},
- {id:21,name:"Açaí com suco de Laranja (300ml)",price:15,img:"🥤"},
+ {id:16,name:"Açaí mousse ninho 300ml",price:13.99,img:"🥤"},
+ {id:17,name:"Açaí mousse morango 300ml",price:16,img:"🥤"},
+ {id:18,name:"Açaí mousse maracujá 300ml",price:13.99,img:"🥤"},
+ {id:19,name:"Açaí Nutella 300ml",price:18,img:"🥤"},
+ {id:20,name:"Açaí Kinder 300ml",price:18.5,img:"🥤"},
+ {id:21,name:"Açaí laranja 300ml",price:15,img:"🥤"},
 ];
 
-/* ===== TROCAR CATEGORIA ===== */
+/* NAVEGAÇÃO */
 function showCategory(type){
   document.getElementById("home").classList.add("hidden");
-  const container = document.getElementById("products");
-  container.classList.remove("hidden");
+  document.getElementById("products").classList.remove("hidden");
+  document.getElementById("backBtn").classList.remove("hidden");
 
-  currentProducts = type === "geleias" ? geleias : acai;
-
+  currentProducts = type==="geleias"?geleias:acai;
   renderProducts();
 }
 
-/* ===== RENDER ===== */
+function goHome(){
+  document.getElementById("home").classList.remove("hidden");
+  document.getElementById("products").classList.add("hidden");
+  document.getElementById("backBtn").classList.add("hidden");
+}
+
+/* RENDER */
 function renderProducts(){
-  const container = document.getElementById("products");
-  container.innerHTML = "";
+  const el=document.getElementById("products");
+  el.innerHTML="";
 
   currentProducts.forEach(p=>{
-    container.innerHTML += `
+    el.innerHTML+=`
     <div class="bg-white rounded-xl p-5 shadow text-center flex flex-col">
       <div class="text-5xl mb-3">${p.img}</div>
-      <h3 class="font-bold mb-1">${p.name}</h3>
-      <p class="mb-3 font-semibold">R$ ${p.price.toFixed(2).replace('.',',')}</p>
+      <h3 class="font-bold">${p.name}</h3>
+      <p class="mb-3">R$ ${p.price.toFixed(2).replace('.',',')}</p>
 
-      <div class="flex justify-center items-center gap-3 mb-3">
-        <button onclick="changeTemp(${p.id},-1)" class="px-2 border rounded">−</button>
+      <div class="flex justify-center gap-3 mb-3">
+        <button onclick="changeTemp(${p.id},-1)">−</button>
         <span id="temp-${p.id}">1</span>
-        <button onclick="changeTemp(${p.id},1)" class="px-2 border rounded">+</button>
+        <button onclick="changeTemp(${p.id},1)">+</button>
       </div>
 
       <button onclick="addToCart(${p.id})"
-        class="bg-amber-900 text-white py-2 rounded hover:bg-amber-800">
+        class="bg-amber-900 text-white py-2 rounded">
         Adicionar
       </button>
     </div>`;
   });
 }
 
-/* ===== CARRINHO ===== */
+/* CARRINHO */
 function changeTemp(id,d){
-  tempQty[id]=(tempQty[id]||1)+d;
-  if(tempQty[id]<1) tempQty[id]=1;
-  document.getElementById(`temp-${id}`).innerText=tempQty[id];
+ tempQty[id]=(tempQty[id]||1)+d;
+ if(tempQty[id]<1) tempQty[id]=1;
+ document.getElementById(`temp-${id}`).innerText=tempQty[id];
 }
 
 function addToCart(id){
-  const q=tempQty[id]||1;
-  const p=currentProducts.find(x=>x.id===id);
-  const item=cart.find(i=>i.id===id);
+ const q=tempQty[id]||1;
+ const p=currentProducts.find(x=>x.id===id);
+ const item=cart.find(i=>i.id===id);
 
-  if(item){ item.q+=q; }
-  else{ cart.push({id:p.id,name:p.name,price:p.price,q}); }
-
-  tempQty[id]=1;
-  updateCart();
+ if(item){item.q+=q;} else{cart.push({...p,q});}
+ tempQty[id]=1;
+ updateCart();
 }
 
 function updateCart(){
-  const el=document.getElementById("cart-items");
-  el.innerHTML="";
-  let total=0,count=0;
+ let total=0,count=0;
+ const el=document.getElementById("cart-items");
+ el.innerHTML="";
 
-  cart.forEach(i=>{
-    total+=i.price*i.q;
-    count+=i.q;
-    el.innerHTML+=`
-      <div class="flex justify-between">
-        <span>${i.q}x ${i.name}</span>
-        <span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span>
-      </div>`;
-  });
+ cart.forEach(i=>{
+  total+=i.price*i.q;
+  count+=i.q;
+  el.innerHTML+=`<div>${i.q}x ${i.name}</div>`;
+ });
 
-  document.getElementById("cart-total").innerText=`R$ ${total.toFixed(2).replace('.',',')}`;
-  document.getElementById("cart-count").innerText=count;
+ document.getElementById("cart-total").innerText=`R$ ${total.toFixed(2).replace('.',',')}`;
+ document.getElementById("cart-count").innerText=count;
 }
 
-function clearCart(){ cart=[]; updateCart(); }
-
 function toggleCart(){
-  document.getElementById("cart").classList.toggle("translate-x-full");
+ document.getElementById("cart").classList.toggle("translate-x-full");
 }
 
 function checkout(){
-  if(!cart.length) return alert("Carrinho vazio");
-
-  const nome=document.getElementById("nome").value;
-  const endereco=document.getElementById("endereco").value;
-  if(!nome||!endereco) return alert("Preencha nome e endereço");
-
-  let msg=`Pedido:%0A`;
-  let total=0;
-
-  cart.forEach(i=>{
-    msg+=`${i.q}x ${i.name}%0A`;
-    total+=i.price*i.q;
-  });
-
-  msg+=`%0ATotal: R$ ${total.toFixed(2).replace('.',',')}`;
-  msg+=`%0ANome: ${nome}%0AEndereço: ${endereco}`;
-
-  window.open(`https://wa.me/5516981035718?text=${msg}`,"_blank");
+ if(!cart.length) return alert("Carrinho vazio");
+ window.open("https://wa.me/5516981035718","_blank");
 }
+
+/* AVALIAÇÕES */
+let selectedStars=5;
+
+function setStars(n){
+ selectedStars=n;
+ document.querySelectorAll('.star').forEach((s,i)=>{
+  s.classList.toggle('active',i<n);
+ });
+}
+
+function addComment(){
+ const name=document.getElementById("comment-name").value;
+ const text=document.getElementById("comment-text").value;
+ if(!name||!text) return alert("Preencha tudo");
+
+ const comments=JSON.parse(localStorage.getItem("comments")||"[]");
+ comments.unshift({name,text,stars:selectedStars});
+ localStorage.setItem("comments",JSON.stringify(comments));
+
+ loadComments();
+}
+
+function loadComments(){
+ const el=document.getElementById("comments");
+ el.innerHTML="";
+ const comments=JSON.parse(localStorage.getItem("comments")||"[]");
+
+ comments.forEach(c=>{
+  el.innerHTML+=`
+  <div class="p-4 border rounded">
+    <div>${"★".repeat(c.stars)}</div>
+    <p>"${c.text}"</p>
+    <b>${c.name}</b>
+  </div>`;
+ });
+}
+
+window.onload=()=>{
+ setStars(5);
+ loadComments();
+};
 </script>
 
 </body>
+</html>
 </html>
 
 
