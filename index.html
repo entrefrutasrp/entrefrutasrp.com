@@ -31,11 +31,19 @@ body { background:#fdfaf6; }
   </div>
 </header>
 
+<!-- BANNER NOVO -->
+<section class="bg-amber-100 py-12 text-center">
+  <h2 class="text-4xl font-bold text-amber-900">
+    Produtos Artesanais
+  </h2>
+
+  <p class="mt-3 text-lg text-amber-800 max-w-xl mx-auto">
+    Feitos com ingredientes selecionados, sabor de verdade e aquele toque caseiro que conquista na primeira colherada 🍓
+  </p>
+</section>
+
 <!-- HOME -->
 <section id="home" class="py-12 text-center">
-  <h2 class="text-3xl font-bold text-amber-900 mb-8">
-    Escolha o que deseja 🍓
-  </h2>
 
   <div class="flex flex-col md:flex-row gap-8 justify-center items-center">
 
@@ -70,7 +78,6 @@ body { background:#fdfaf6; }
 
   <div class="max-w-xl mx-auto px-4 space-y-4 mb-10">
     <input id="comment-name" placeholder="Seu nome" class="w-full border p-3 rounded">
-
     <textarea id="comment-text" placeholder="Seu comentário"
       class="w-full border p-3 rounded h-28"></textarea>
 
@@ -86,7 +93,12 @@ body { background:#fdfaf6; }
       class="w-full bg-amber-900 text-white py-3 rounded font-bold">
       Enviar avaliação
     </button>
-     </div>
+
+    <button onclick="clearComments()"
+      class="w-full bg-red-500 text-white py-2 rounded">
+      Apagar avaliações (admin)
+    </button>
+  </div>
 
   <div id="comments"
     class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
@@ -96,7 +108,7 @@ body { background:#fdfaf6; }
 <!-- RODAPÉ -->
 <footer class="bg-amber-900 text-white py-10 text-center">
   <h4 class="text-2xl font-bold mb-2">Entre Frutas</h4>
-  <p class="text-amber-200 mb-4">Produtos Atesanais</p>
+  <p class="text-amber-200 mb-4">Produtos Artesanais</p>
 
   <a href="https://www.instagram.com/entrefrutasribeirao" target="_blank">
     📷 Instagram
@@ -121,11 +133,8 @@ body { background:#fdfaf6; }
 <div class="p-4 border-t space-y-3">
   <p class="font-bold">Total: <span id="cart-total">R$ 0,00</span></p>
 
-  <input id="nome" placeholder="Seu nome"
-    class="w-full border p-2 rounded">
-
-  <input id="endereco" placeholder="Endereço completo"
-    class="w-full border p-2 rounded">
+  <input id="nome" placeholder="Seu nome" class="w-full border p-2 rounded">
+  <input id="endereco" placeholder="Endereço completo" class="w-full border p-2 rounded">
 
   <button onclick="clearCart()" class="w-full bg-gray-300 py-2 rounded">
     Limpar carrinho
@@ -139,9 +148,9 @@ body { background:#fdfaf6; }
 </div>
 
 <script>
-let cart=[], tempQty={}, currentProducts=[];
+let cart=[], currentProducts=[];
 
-/* 🔥 COLOCA AQUI SUAS IMAGENS DO GITHUB */
+/* PRODUTOS */
 const geleias = [
  {id:1,name:"Geleia de Morango",price:25,img:"LINK-MORANGO"},
  {id:2,name:"Geleia de Abacaxi com Pimenta",price:24,img:"LINK-ABACAXI"},
@@ -275,10 +284,8 @@ function addComment(){
 }
 
 function clearComments(){
- if(confirm("Apagar todas avaliações?")){
-  localStorage.removeItem("comments");
-  loadComments();
- }
+ localStorage.removeItem("comments");
+ loadComments();
 }
 
 function loadComments(){
@@ -304,5 +311,4 @@ window.onload=()=>{
 
 </body>
 </html>
-
 
