@@ -10,7 +10,6 @@
 <style>
 body { background:#fdfaf6; }
 .cart-slide { transition: transform .3s ease; }
-.hidden { display:none; }
 .star { cursor:pointer; font-size:22px; }
 .star.active { color:#facc15; }
 </style>
@@ -31,44 +30,59 @@ body { background:#fdfaf6; }
   </div>
 </header>
 
-<!-- BANNER NOVO -->
+<!-- BANNER -->
 <section class="bg-amber-100 py-12 text-center">
   <h2 class="text-4xl font-bold text-amber-900">
     Produtos Artesanais
   </h2>
 
   <p class="mt-3 text-lg text-amber-800 max-w-xl mx-auto">
-    Feitos com ingredientes selecionados, sabor de verdade e aquele toque caseiro que conquista na primeira colherada 🍓
+    Açaí cremoso, gelado e feito pra viciar 😍
   </p>
 </section>
 
-<!-- HOME -->
-<section id="home" class="py-12 text-center">
+<!-- PRODUTOS -->
+<main class="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-  <div class="flex flex-col md:flex-row gap-8 justify-center items-center">
+<script>
+const products = [
 
-    <div onclick="showCategory('geleias')" class="cursor-pointer bg-white p-6 rounded-xl shadow hover:scale-105 transition">
-      <img src="SUA-IMAGEM-GELEIA-AQUI" class="w-40 h-40 object-cover rounded mb-3 mx-auto">
-      <h3 class="text-xl font-bold">Geleias Artesanais</h3>
-    </div>
+ {id:1,name:"Açaí com mousse de ninho (500ml)",price:22,img:"LINK-ACAI"},
+ {id:2,name:"Açaí com mousse de morango (500ml)",price:26,img:"LINK-ACAI"},
+ {id:3,name:"Açaí com mousse de maracujá (500ml)",price:22,img:"LINK-ACAI"},
+ {id:4,name:"Açaí com creme de Nutella (500ml)",price:28.5,img:"LINK-ACAI"},
+ {id:5,name:"Açaí com creme de Kinder (500ml)",price:28.5,img:"LINK-ACAI"},
+ {id:6,name:"Açaí com suco de laranja (500ml)",price:20,img:"LINK-ACAI"},
 
-    <div onclick="showCategory('acai')" class="cursor-pointer bg-white p-6 rounded-xl shadow hover:scale-105 transition">
-      <img src="SUA-IMAGEM-ACAI-AQUI" class="w-40 h-40 object-cover rounded mb-3 mx-auto">
-      <h3 class="text-xl font-bold">Açaí na Garrafa</h3>
-    </div>
+ {id:7,name:"Açaí com mousse de ninho (300ml)",price:13.99,img:"LINK-ACAI"},
+ {id:8,name:"Açaí com mousse de morango (300ml)",price:16,img:"LINK-ACAI"},
+ {id:9,name:"Açaí com mousse de maracujá (300ml)",price:13.99,img:"LINK-ACAI"},
+ {id:10,name:"Açaí com creme de Nutella (300ml)",price:18,img:"LINK-ACAI"},
+ {id:11,name:"Açaí com creme de Kinder (300ml)",price:18.5,img:"LINK-ACAI"},
+ {id:12,name:"Açaí com suco de laranja (300ml)",price:15,img:"LINK-ACAI"}
 
-  </div>
-</section>
+];
 
-<!-- VOLTAR -->
-<div id="backBtn" class="hidden text-center mt-6">
-  <button onclick="goHome()" class="bg-gray-300 px-4 py-2 rounded">
-    ⬅ Voltar
+let cart = [];
+
+products.forEach(p=>{
+document.write(`
+<div class="bg-white rounded-xl p-5 shadow text-center flex flex-col">
+  <img src="${p.img}" class="w-full h-40 object-cover rounded mb-3">
+
+  <h3 class="font-bold mb-1">${p.name}</h3>
+  <p class="mb-3 font-semibold">R$ ${p.price.toFixed(2).replace('.',',')}</p>
+
+  <button onclick="addToCart(${p.id})"
+    class="bg-amber-900 text-white py-2 rounded hover:bg-amber-800">
+    Adicionar
   </button>
 </div>
+`);
+});
+</script>
 
-<!-- PRODUTOS -->
-<main id="products" class="max-w-6xl mx-auto px-4 py-10 hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></main>
+</main>
 
 <!-- AVALIAÇÕES -->
 <section class="bg-white py-12">
@@ -77,7 +91,9 @@ body { background:#fdfaf6; }
   </h3>
 
   <div class="max-w-xl mx-auto px-4 space-y-4 mb-10">
-    <input id="comment-name" placeholder="Seu nome" class="w-full border p-3 rounded">
+    <input id="comment-name" placeholder="Seu nome"
+      class="w-full border p-3 rounded">
+
     <textarea id="comment-text" placeholder="Seu comentário"
       class="w-full border p-3 rounded h-28"></textarea>
 
@@ -93,11 +109,6 @@ body { background:#fdfaf6; }
       class="w-full bg-amber-900 text-white py-3 rounded font-bold">
       Enviar avaliação
     </button>
-
-    <button onclick="clearComments()"
-      class="w-full bg-red-500 text-white py-2 rounded">
-      Apagar avaliações (admin)
-    </button>
   </div>
 
   <div id="comments"
@@ -108,14 +119,14 @@ body { background:#fdfaf6; }
 <!-- RODAPÉ -->
 <footer class="bg-amber-900 text-white py-10 text-center">
   <h4 class="text-2xl font-bold mb-2">Entre Frutas</h4>
-  <p class="text-amber-200 mb-4">Produtos Artesanais</p>
+  <p class="text-amber-200 mb-4">Açaí na Garrafa</p>
 
   <a href="https://www.instagram.com/entrefrutasribeirao" target="_blank">
     📷 Instagram
   </a>
 
   <p class="mt-6 text-sm text-amber-300">
-    Transformando frutas em carinho, todos os dias 🍓
+    Transformando seu dia com o melhor açaí 🍓
   </p>
 </footer>
 
@@ -133,8 +144,11 @@ body { background:#fdfaf6; }
 <div class="p-4 border-t space-y-3">
   <p class="font-bold">Total: <span id="cart-total">R$ 0,00</span></p>
 
-  <input id="nome" placeholder="Seu nome" class="w-full border p-2 rounded">
-  <input id="endereco" placeholder="Endereço completo" class="w-full border p-2 rounded">
+  <input id="nome" placeholder="Seu nome"
+    class="w-full border p-2 rounded">
+
+  <input id="endereco" placeholder="Endereço completo"
+    class="w-full border p-2 rounded">
 
   <button onclick="clearCart()" class="w-full bg-gray-300 py-2 rounded">
     Limpar carrinho
@@ -148,70 +162,8 @@ body { background:#fdfaf6; }
 </div>
 
 <script>
-let cart=[], currentProducts=[];
-
-/* PRODUTOS */
-const geleias = [
- {id:1,name:"Geleia de Morango",price:25,img:"LINK-MORANGO"},
- {id:2,name:"Geleia de Abacaxi com Pimenta",price:24,img:"LINK-ABACAXI"},
- {id:3,name:"Geleia de Frutas Vermelhas",price:28,img:"LINK-FRUTAS"},
- {id:4,name:"Geleia de Damasco",price:30,img:"LINK-DAMASCO"},
- {id:5,name:"Molho de Pimenta",price:18.99,img:"LINK-PIMENTA"},
-];
-
-const acai = [
- {id:10,name:"Açaí mousse ninho 500ml",price:22,img:"LINK-ACAI"},
- {id:11,name:"Açaí mousse morango 500ml",price:26,img:"LINK-ACAI"},
- {id:12,name:"Açaí mousse maracujá 500ml",price:22,img:"LINK-ACAI"},
- {id:13,name:"Açaí Nutella 500ml",price:28.5,img:"LINK-ACAI"},
- {id:14,name:"Açaí Kinder 500ml",price:28.5,img:"LINK-ACAI"},
- {id:15,name:"Açaí laranja 500ml",price:20,img:"LINK-ACAI"},
-
- {id:16,name:"Açaí mousse ninho 300ml",price:13.99,img:"LINK-ACAI"},
- {id:17,name:"Açaí mousse morango 300ml",price:16,img:"LINK-ACAI"},
- {id:18,name:"Açaí mousse maracujá 300ml",price:13.99,img:"LINK-ACAI"},
- {id:19,name:"Açaí Nutella 300ml",price:18,img:"LINK-ACAI"},
- {id:20,name:"Açaí Kinder 300ml",price:18.5,img:"LINK-ACAI"},
- {id:21,name:"Açaí laranja 300ml",price:15,img:"LINK-ACAI"},
-];
-
-/* NAV */
-function showCategory(type){
- document.getElementById("home").classList.add("hidden");
- document.getElementById("products").classList.remove("hidden");
- document.getElementById("backBtn").classList.remove("hidden");
- currentProducts = type==="geleias"?geleias:acai;
- renderProducts();
-}
-
-function goHome(){
- document.getElementById("home").classList.remove("hidden");
- document.getElementById("products").classList.add("hidden");
- document.getElementById("backBtn").classList.add("hidden");
-}
-
-/* RENDER */
-function renderProducts(){
- const el=document.getElementById("products");
- el.innerHTML="";
- currentProducts.forEach(p=>{
-  el.innerHTML+=`
-  <div class="bg-white rounded-xl p-5 shadow text-center">
-    <img src="${p.img}" class="w-full h-40 object-cover rounded mb-3">
-    <h3 class="font-bold">${p.name}</h3>
-    <p class="mb-3">R$ ${p.price.toFixed(2).replace('.',',')}</p>
-
-    <button onclick="addToCart(${p.id})"
-      class="bg-amber-900 text-white py-2 px-4 rounded">
-      Adicionar
-    </button>
-  </div>`;
- });
-}
-
-/* CARRINHO */
 function addToCart(id){
- const p=currentProducts.find(x=>x.id===id);
+ const p=products.find(x=>x.id===id);
  const item=cart.find(i=>i.id===id);
  if(item){item.q+=1;} else{cart.push({...p,q:1});}
  updateCart();
@@ -283,11 +235,6 @@ function addComment(){
  loadComments();
 }
 
-function clearComments(){
- localStorage.removeItem("comments");
- loadComments();
-}
-
 function loadComments(){
  const el=document.getElementById("comments");
  el.innerHTML="";
@@ -311,4 +258,3 @@ window.onload=()=>{
 
 </body>
 </html>
-
