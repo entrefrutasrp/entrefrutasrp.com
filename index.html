@@ -65,7 +65,7 @@ body { background:#fdfaf6; }
 <main id="products" class="max-w-6xl mx-auto px-4 py-10 hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></main>
 
 <!-- AVALIAÇÕES -->
-<section id="avaliacoes" class="bg-white py-12">
+<section class="bg-white py-12">
   <h3 class="text-3xl font-bold text-center text-amber-900 mb-6">
     Avaliações dos Clientes ⭐
   </h3>
@@ -112,20 +112,51 @@ body { background:#fdfaf6; }
   </p>
 </footer>
 
-<!-- SCRIPT -->
+<!-- CARRINHO -->
+<div id="cart"
+ class="fixed top-0 right-0 w-full max-w-sm h-full bg-white shadow-lg cart-slide translate-x-full z-50 flex flex-col">
+
+<div class="p-4 flex justify-between items-center border-b">
+  <h3 class="font-bold">Seu carrinho</h3>
+  <button onclick="toggleCart()">❌</button>
+</div>
+
+<div id="cart-items" class="flex-1 p-4 space-y-3 overflow-y-auto"></div>
+
+<div class="p-4 border-t space-y-3">
+  <p class="font-bold">Total: <span id="cart-total">R$ 0,00</span></p>
+
+  <input id="nome" placeholder="Seu nome"
+    class="w-full border p-2 rounded">
+
+  <input id="endereco" placeholder="Endereço completo"
+    class="w-full border p-2 rounded">
+
+  <button onclick="clearCart()" class="w-full bg-gray-300 py-2 rounded">
+    Limpar carrinho
+  </button>
+
+  <button onclick="checkout()"
+    class="w-full bg-green-600 text-white py-3 rounded font-bold">
+    Finalizar no WhatsApp
+  </button>
+</div>
+</div>
+
 <script>
 let cart=[], tempQty={}, currentProducts=[];
 
-/* PRODUTOS */
-const geleias=[ 
-{id:1,name:"Geleia de Morango",price:25,img:"🍓"}, 
-{id:2,name:"Geleia de Abacaxi com Pimenta",price:24,img:"🍍"}, 
-{id:3,name:"Geleia de Frutas Vermelhas",price:28,img:"🍒"},
-{id:4,name:"Geleia de Damasco",price:30,img:"🍑"}, 
-{id:5,name:"Molho de Pimenta",price:18.99,img:"🌶️"},
+/* GELEIAS COMPLETAS */
+const geleias = [
+ {id:1,name:"Geleia de Morango",price:25,img:"🍓"},
+ {id:2,name:"Geleia de Abacaxi com Pimenta",price:24,img:"🍍"},
+ {id:3,name:"Geleia de Frutas Vermelhas",price:28,img:"🍒"},
+ {id:4,name:"Geleia de Damasco",price:30,img:"🍑"},
+ {id:5,name:"Molho de Pimenta",price:18.99,img:"🌶️"},
 ];
 
-const acai=[
+/* AÇAÍ */
+const acai = [
  {id:10,name:"Açaí mousse ninho 500ml",price:22,img:"🥤"},
  {id:11,name:"Açaí mousse morango 500ml",price:26,img:"🥤"},
  {id:12,name:"Açaí mousse maracujá 500ml",price:22,img:"🥤"},
@@ -208,12 +239,18 @@ function updateCart(){
  cart.forEach(i=>{
   total+=i.price*i.q;
   count+=i.q;
-  el.innerHTML+=`<div>${i.q}x ${i.name}</div>`;
+  el.innerHTML+=`
+    <div class="flex justify-between">
+      <span>${i.q}x ${i.name}</span>
+      <span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span>
+    </div>`;
  });
 
  document.getElementById("cart-total").innerText=`R$ ${total.toFixed(2).replace('.',',')}`;
  document.getElementById("cart-count").innerText=count;
 }
+
+function clearCart(){ cart=[]; updateCart(); }
 
 function toggleCart(){
  document.getElementById("cart").classList.toggle("translate-x-full");
@@ -221,7 +258,23 @@ function toggleCart(){
 
 function checkout(){
  if(!cart.length) return alert("Carrinho vazio");
- window.open("https://wa.me/5516981035718","_blank");
+
+ const nome=document.getElementById("nome").value;
+ const endereco=document.getElementById("endereco").value;
+ if(!nome||!endereco) return alert("Preencha nome e endereço");
+
+ let msg=`Pedido:%0A`;
+ let total=0;
+
+ cart.forEach(i=>{
+  msg+=`${i.q}x ${i.name}%0A`;
+  total+=i.price*i.q;
+ });
+
+ msg+=`%0ATotal: R$ ${total.toFixed(2).replace('.',',')}`;
+ msg+=`%0ANome: ${nome}%0AEndereço: ${endereco}`;
+
+ window.open(`https://wa.me/5516981035718?text=${msg}`,"_blank");
 }
 
 /* AVALIAÇÕES */
@@ -253,8 +306,8 @@ function loadComments(){
 
  comments.forEach(c=>{
   el.innerHTML+=`
-  <div class="p-4 border rounded">
-    <div>${"★".repeat(c.stars)}</div>
+  <div class="p-4 border rounded bg-amber-50">
+    <div class="text-yellow-400">${"★".repeat(c.stars)}</div>
     <p>"${c.text}"</p>
     <b>${c.name}</b>
   </div>`;
@@ -269,8 +322,6 @@ window.onload=()=>{
 
 </body>
 </html>
-</html>
-
 
 
 
